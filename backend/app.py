@@ -1,0 +1,50 @@
+from flask import Flask, request, jsonify
+import google.generativeai as genai
+import os
+from dotenv import load_dotenv
+from flask_cors import CORS
+
+load_dotenv()
+
+# Set up Gemini API
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
+
+@app.route("/", methods=["GET"])
+def home():
+    return "Welcome to the Mental Health Advice API!"
+
+@app.route("/get-advice", methods=["POST"])
+def get_advice():
+    try:
+        user_input = request.json.get("user_input")
+        if not user_input:
+            return jsonify({"error": "user_input is required"}), 400
+
+        prompt = f"""
+        You are a mental health counselor assistant. Given the following issue a counselor is dealing with, provide thoughtful and empathetic advice on how to respond:
+
+        Patient Issue: "{user_input}"
+
+        Advice:
+        """
+        
+        # Generate content using the Gemini API
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        response = model.generate_content(prompt)
+
+        # Extract the generated advice
+        reply = response.text
+        return jsonify({"advice": reply})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/favicon.ico")
+def favicon():
+    return "", 204
+
+if __name__ == "__main__":
+    app.run(debug=True)
