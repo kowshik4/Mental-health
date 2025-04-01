@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+const BACKEND_URL = "https://your-backend.onrender.com";
+
 function App() {
   const [input, setInput] = useState("");
   const [advice, setAdvice] = useState("");
@@ -8,7 +10,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://127.0.0.1:5000/get-advice", {
+      const response = await axios.post(`${BACKEND_URL}/get-advice`, {
         user_input: input,
       });
 
