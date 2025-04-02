@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const BACKEND_URL = "https://your-backend.onrender.com";
+const BACKEND_URL = "https://mental-health-backend.onrender.com";
 
 function App() {
   const [input, setInput] = useState("");
