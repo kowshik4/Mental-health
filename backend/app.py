@@ -53,6 +53,10 @@ def get_advice():
 def favicon():
     return "", 204
 
+@app.route("/<path:path>", methods=["OPTIONS"])
+def handle_preflight(path):
+    return "", 204
+
 @app.after_request
 def add_cors_headers(response):
     response.headers["Access-Control-Allow-Origin"] = "https://mental-health-1-n2v3.onrender.com"
