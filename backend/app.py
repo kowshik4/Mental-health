@@ -10,7 +10,11 @@ load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app,
+     resources={r"/*": {"origins": "https://mental-health-1-n2v3.onrender.com"}},
+     supports_credentials=True,
+     methods=["GET", "POST", "OPTIONS"],
+     allow_headers=["Content-Type", "Authorization"])
 
 @app.route("/", methods=["GET"])
 def home():
