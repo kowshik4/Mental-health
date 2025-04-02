@@ -20,31 +20,34 @@ CORS(app,
 def home():
     return "Welcome to the Mental Health Advice API!"
 
-@app.route("/get-advice", methods=["POST"])
+@app.route("/get-advice", methods=["POST", "OPTIONS"])
 def get_advice():
-    try:
-        user_input = request.json.get("user_input")
-        if not user_input:
-            return jsonify({"error": "user_input is required"}), 400
+    if request.method == "OPTIONS":
+        return "", 204
+    else:
+        try:
+            user_input = request.json.get("user_input")
+            if not user_input:
+                return jsonify({"error": "user_input is required"}), 400
 
-        prompt = f"""
-        You are a mental health counselor assistant. Given the following issue a counselor is dealing with, provide thoughtful and empathetic advice on how to respond:
+            prompt = f"""
+            You are a mental health counselor assistant. Given the following issue a counselor is dealing with, provide thoughtful and empathetic advice on how to respond:
 
-        Patient Issue: "{user_input}"
+            Patient Issue: "{user_input}"
 
-        Advice:
-        """
-        
-        # Generate content using the Gemini API
-        model = genai.GenerativeModel("gemini-1.5-flash")
-        response = model.generate_content(prompt)
+            Advice:
+            """
+            
+            # Generate content using the Gemini API
+            model = genai.GenerativeModel("gemini-1.5-flash")
+            response = model.generate_content(prompt)
 
-        # Extract the generated advice
-        reply = response.text
-        return jsonify({"advice": reply})
+            # Extract the generated advice
+            reply = response.text
+            return jsonify({"advice": reply})
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
 
 @app.route("/favicon.ico")
 def favicon():
